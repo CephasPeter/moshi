@@ -25,6 +25,8 @@ import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
 import kotlin.reflect.KClass
 import kotlin.reflect.KClassifier
 import kotlin.reflect.KType
@@ -35,7 +37,20 @@ import kotlin.reflect.full.createType
 import kotlin.reflect.full.declaredMemberProperties
 
 /** Execute kotlinc to confirm that either files are generated or errors are printed. */
-class JsonClassCodegenProcessorTest {
+@RunWith(Parameterized::class)
+class JsonClassCodegenProcessorTest(private val languageVersion: String) {
+
+  companion object {
+    @JvmStatic
+    @Parameterized.Parameters(name = "languageVersion={0}")
+    fun data(): Collection<Array<Any>> {
+      return listOf(
+        arrayOf("1.5"),
+        arrayOf("1.6")
+      )
+    }
+  }
+
   @Rule @JvmField var temporaryFolder: TemporaryFolder = TemporaryFolder()
 
   @Test
@@ -763,6 +778,8 @@ class JsonClassCodegenProcessorTest {
         inheritClassPath = true
         sources = sourceFiles.asList()
         verbose = false
+        // TODO toe-hold until https://github.com/tschuchortdev/kotlin-compile-testing/issues/196
+//        kotlincArguments = listOf("-language-version $languageVersion")
       }
   }
 
