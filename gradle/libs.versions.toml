@@ -18,7 +18,7 @@ gjf = "1.11.0"
 incap = "0.3"
 jvmTarget = "1.8"
 kotlin = "1.5.30"
-kotlinCompileTesting = "1.4.3"
+kotlinCompileTesting = "1.4.4"
 kotlinpoet = "1.9.0"
 ktlint = "0.41.0"
 
