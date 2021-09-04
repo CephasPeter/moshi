@@ -74,6 +74,7 @@ private val VISIBILITY_MODIFIERS = setOf(
   KModifier.PROTECTED,
   KModifier.PUBLIC
 )
+private val ANNOTATION_INSTANTIATION_MIN_VERSION = KotlinVersion(1, 6, 0)
 
 private fun Collection<KModifier>.visibility(): KModifier {
   return find { it in VISIBILITY_MODIFIERS } ?: KModifier.PUBLIC
@@ -207,6 +208,9 @@ internal fun targetType(
     }
   }
 
+  val (major, minor, patch) = typeMetadata.metadataVersion
+  val languageVersion = KotlinVersion(major, minor, patch)
+  val instantiateAnnotations = languageVersion >= ANNOTATION_INSTANTIATION_MIN_VERSION
   val kotlinApi = cachedClassInspector.toTypeSpec(kmClass)
   val typeVariables = kotlinApi.typeVariables
   val appliedType = AppliedType.get(element)
@@ -322,7 +326,8 @@ internal fun targetType(
     properties = properties,
     typeVariables = typeVariables,
     isDataClass = KModifier.DATA in kotlinApi.modifiers,
-    visibility = resolvedVisibility
+    visibility = resolvedVisibility,
+    instantiateAnnotations = instantiateAnnotations
   )
 }
 
